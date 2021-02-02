@@ -1,10 +1,11 @@
-import * as fs from 'fs-extra';
+import * as fs from 'fs';
 import * as path from 'path';
 import configObject, { ConfigType } from './config';
 import { render } from './render';
 
 export function renderTemplate(config?: ConfigType) {
     try {
+        const fsExtra = require('fs-extra')
         configObject.merge(config)
 
         configObject.defaultValue({
@@ -14,11 +15,11 @@ export function renderTemplate(config?: ConfigType) {
         })
         
         if (!fs.existsSync(configObject.get('newRenderProjectDir'))) {
-            fs.mkdirpSync(configObject.get('newRenderProjectDir'))
+          fsExtra.mkdirpSync(configObject.get('newRenderProjectDir'))
         } else {
           throw new Error(`模块已存在: ${configObject.get('newRenderProjectDir')}`)
         }
-        fs.copySync(configObject.get('templateDir'), configObject.get('newRenderProjectDir'))
+        fsExtra.copySync(configObject.get('templateDir'), configObject.get('newRenderProjectDir'))
 
         // 渲染
         renderDirs(configObject.get('newRenderProjectDir'))
